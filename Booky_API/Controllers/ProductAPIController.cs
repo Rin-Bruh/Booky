@@ -47,10 +47,15 @@ namespace Booky_API.Controllers
 		{
 			//try
 			//{
-				//if (!ModelState.IsValid)
-				//{
-				//    return BadRequest(ModelState);
-				//}
+			//if (!ModelState.IsValid)
+			//{
+			//    return BadRequest(ModelState);
+			//}
+			if (ProductStore.productList.FirstOrDefault(u => u.Title.ToLower() == productDTO.Title.ToLower()) != null)
+			{
+				ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
+				return BadRequest(ModelState);
+			}
 				if (productDTO == null)
 				{
 					//ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
@@ -92,6 +97,45 @@ namespace Booky_API.Controllers
 			//		 = new List<string>() { ex.ToString() };
 			//}
 			return CreatedAtRoute("GetProduct", new { id = productDTO.Id}, productDTO);
+		}
+
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		//[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[HttpDelete("{id:int}", Name = "DeleteProduct")]
+		public IActionResult DeleteProduct(int id)
+		{
+			if(id == 0)
+			{
+				return BadRequest();
+			}
+			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
+			if (product == null)
+			{
+				return NotFound();
+			}
+			ProductStore.productList.Remove(product);
+			return NoContent();
+		}
+
+		[HttpPut("{id:int}", Name = "UpdateProduct")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult UpdateProduct(int id, [FromBody] ProductDTO productDTO)
+		{
+			if (productDTO == null || id != productDTO.Id)
+			{
+				return BadRequest();
+			}
+			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
+			product.Title = productDTO.Title;
+			product.ISBN = productDTO.ISBN;
+			product.Description = productDTO.Description;
+			product.Author = productDTO.Author;
+
+			return NoContent();
 		}
 	}
 }
