@@ -2,6 +2,7 @@
 using Booky_API.Models;
 using Booky_API.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Xml;
@@ -134,6 +135,29 @@ namespace Booky_API.Controllers
 			product.ISBN = productDTO.ISBN;
 			product.Description = productDTO.Description;
 			product.Author = productDTO.Author;
+
+			return NoContent();
+		}
+
+		[HttpPatch("{id:int}", Name = "UpdatePartialProduct")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult UpdatePartialProduct(int id, JsonPatchDocument<ProductDTO> patchDTO)
+		{
+			if (patchDTO == null || id == 0)
+			{
+				return BadRequest();
+			}
+			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
+			if (product == null)
+			{
+				return BadRequest();
+			}
+			patchDTO.ApplyTo(product, ModelState);
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
 			return NoContent();
 		}
