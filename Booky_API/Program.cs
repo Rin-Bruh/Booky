@@ -5,9 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
+//Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
+//	.WriteTo.File("log/productLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+//builder.Host.UseSerilog();
+
 builder.Services.AddControllers(options =>
 {
-	options.ReturnHttpNotAcceptable = true;
+	//options.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

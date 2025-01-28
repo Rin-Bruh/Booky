@@ -14,10 +14,17 @@ namespace Booky_API.Controllers
 	[ApiController]
 	public class ProductAPIController : ControllerBase
 	{
+		public readonly ILogger<ProductAPIController> _logger;
+
+		public ProductAPIController(ILogger<ProductAPIController> logger)
+		{
+			_logger = logger;
+		}
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public ActionResult<IEnumerable<ProductDTO>> GetProducts()
 		{
+			_logger.LogInformation("Getting all product");
 			return Ok(ProductStore.productList);
 		}
 
@@ -29,6 +36,7 @@ namespace Booky_API.Controllers
 		{
 			if (id == 0)
 			{
+				_logger.LogError("Get Product Error with Id" + id);
 				return BadRequest();
 			}
 			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
