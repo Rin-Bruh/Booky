@@ -1,15 +1,17 @@
+using Booky_API.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-
+builder.Services.AddDbContext<ApplicationDBContext>(option => {
+	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+});
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
 //	.WriteTo.File("log/productLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 //builder.Host.UseSerilog();
-
 builder.Services.AddControllers(options =>
 {
 	//options.ReturnHttpNotAcceptable = true;
