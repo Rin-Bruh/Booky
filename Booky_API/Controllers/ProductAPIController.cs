@@ -1,4 +1,5 @@
 ﻿using Booky_API.Data;
+using Booky_API.Logging;
 using Booky_API.Models;
 using Booky_API.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +15,9 @@ namespace Booky_API.Controllers
 	[ApiController]
 	public class ProductAPIController : ControllerBase
 	{
-		public readonly ILogger<ProductAPIController> _logger;
+		private readonly ILogging _logger;
 
-		public ProductAPIController(ILogger<ProductAPIController> logger)
+		public ProductAPIController(ILogging logger)
 		{
 			_logger = logger;
 		}
@@ -24,7 +25,7 @@ namespace Booky_API.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public ActionResult<IEnumerable<ProductDTO>> GetProducts()
 		{
-			_logger.LogInformation("Getting all product");
+			_logger.Log("Getting all product", "");
 			return Ok(ProductStore.productList);
 		}
 
@@ -36,7 +37,7 @@ namespace Booky_API.Controllers
 		{
 			if (id == 0)
 			{
-				_logger.LogError("Get Product Error with Id" + id);
+				_logger.Log("Get Product Error with Id" + id, "error");
 				return BadRequest();
 			}
 			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
