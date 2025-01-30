@@ -1,13 +1,16 @@
 using Booky_API.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDBContext>(option => {
-	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+builder.Services.AddDbContext<ApplicationDBContext>(options => {
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+	options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
 //	.WriteTo.File("log/productLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
