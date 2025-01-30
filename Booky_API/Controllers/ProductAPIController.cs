@@ -4,6 +4,7 @@ using Booky_API.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Xml;
 
@@ -15,9 +16,11 @@ namespace Booky_API.Controllers
 	public class ProductAPIController : ControllerBase
 	{
 		//private readonly ILogging _logger;
+		private readonly ApplicationDBContext _db;
 
-		public ProductAPIController()
+		public ProductAPIController(ApplicationDBContext db)
 		{
+			_db = db;
 			//_logger = logger;
 		}
 		[HttpGet]
@@ -25,7 +28,7 @@ namespace Booky_API.Controllers
 		public ActionResult<IEnumerable<ProductDTO>> GetProducts()
 		{
 			//_logger.Log("Getting all product", "");
-			return Ok(ProductStore.productList);
+			return Ok(_db.Products.ToList());
 		}
 
 		[HttpGet("{id:int}",Name = "GetProduct")]
@@ -39,7 +42,7 @@ namespace Booky_API.Controllers
 				//_logger.Log("Get Product Error with Id" + id, "error");
 				return BadRequest();
 			}
-			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
+			var product = _db.Products.FirstOrDefault(u => u.Id == id);
 			if (product == null)
 			{
 				return NotFound();
@@ -60,44 +63,42 @@ namespace Booky_API.Controllers
 			//{
 			//    return BadRequest(ModelState);
 			//}
-			if (ProductStore.productList.FirstOrDefault(u => u.Title.ToLower() == productDTO.Title.ToLower()) != null)
+			if (_db.Products.FirstOrDefault(u => u.Title.ToLower() == productDTO.Title.ToLower()) != null)
 			{
 				ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
 				return BadRequest(ModelState);
 			}
-				if (productDTO == null)
-				{
-					//ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
-					return BadRequest(ModelState);
-				}
+			if (productDTO == null)
+			{
+				//ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
+				return BadRequest(ModelState);
+			}
 
-				if (productDTO.Id > 0)
-				{
-					return StatusCode(StatusCodes.Status500InternalServerError);
-				}
-				productDTO.Id = ProductStore.productList.OrderByDescending(u=>u.Id).FirstOrDefault().Id+1;
-				ProductStore.productList.Add(productDTO);
-				//if (villaDTO.Id > 0)
-				//{
-				//    return StatusCode(StatusCodes.Status500InternalServerError);
-				//}
-
-				//Villa villa = _mapper.Map<Villa>(createDTO);
-
-				//Villa model = new()
-				//{
-				//    Amenity = createDTO.Amenity,
-				//    Details = createDTO.Details,
-				//    ImageUrl = createDTO.ImageUrl,
-				//    Name = createDTO.Name,
-				//    Occupancy = createDTO.Occupancy,
-				//    Rate = createDTO.Rate,
-				//    Sqft = createDTO.Sqft
-				//};
-				//await _dbVilla.CreateAsync(villa);
-				//_response.Result = _mapper.Map<VillaDTO>(villa);
-				//_response.StatusCode = HttpStatusCode.Created;
-				//return CreatedAtRoute("GetVilla", new { id = villa.Id }, _response);
+			if (productDTO.Id > 0)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+				
+			//Villa villa = _mapper.Map<Villa>(createDTO);
+			Product model = new()
+			{
+				Title = productDTO.Title,
+				Description = productDTO.Description,
+				ISBN = productDTO.ISBN,
+				Author = productDTO.Author,
+				ListPrice = productDTO.ListPrice,
+				Price = productDTO.Price,
+				Price50 = productDTO.Price50,
+				Price100 = productDTO.Price100,
+				ImageUrl = productDTO.ImageUrl,
+				CategoryId = productDTO.CategoryId
+			};
+			_db.Products.Add(model);
+			_db.SaveChanges();
+			//await _dbVilla.CreateAsync(villa);
+			//_response.Result = _mapper.Map<VillaDTO>(villa);
+			//_response.StatusCode = HttpStatusCode.Created;
+			//return CreatedAtRoute("GetVilla", new { id = villa.Id }, _response);
 			//}
 			//catch (Exception ex)
 			//{
@@ -120,12 +121,13 @@ namespace Booky_API.Controllers
 			{
 				return BadRequest();
 			}
-			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
+			var product = _db.Products.FirstOrDefault(u => u.Id == id);
 			if (product == null)
 			{
 				return NotFound();
 			}
-			ProductStore.productList.Remove(product);
+			_db.Products.Remove(product);
+			_db.SaveChanges();
 			return NoContent();
 		}
 
@@ -138,12 +140,27 @@ namespace Booky_API.Controllers
 			{
 				return BadRequest();
 			}
-			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
-			product.Title = productDTO.Title;
-			product.ISBN = productDTO.ISBN;
-			product.Description = productDTO.Description;
-			product.Author = productDTO.Author;
-
+			//var product = _db.Products.FirstOrDefault(u => u.Id == id);
+			//product.Title = productDTO.Title;
+			//product.ISBN = productDTO.ISBN;
+			//product.Description = productDTO.Description;
+			//product.Author = productDTO.Author;
+			Product model = new()
+			{
+				Id = productDTO.Id,
+				Title = productDTO.Title,
+				Description = productDTO.Description,
+				ISBN = productDTO.ISBN,
+				Author = productDTO.Author,
+				ListPrice = productDTO.ListPrice,
+				Price = productDTO.Price,
+				Price50 = productDTO.Price50,
+				Price100 = productDTO.Price100,
+				ImageUrl = productDTO.ImageUrl,
+				CategoryId = productDTO.CategoryId
+			};
+			_db.Products.Update(model);
+			_db.SaveChanges();
 			return NoContent();
 		}
 
@@ -156,12 +173,42 @@ namespace Booky_API.Controllers
 			{
 				return BadRequest();
 			}
-			var product = ProductStore.productList.FirstOrDefault(u => u.Id == id);
+			var product = _db.Products.AsNoTracking().FirstOrDefault(u => u.Id == id);
+			ProductDTO productDTO = new()
+			{
+				Id = product.Id,
+				Title = product.Title,
+				Description = product.Description,
+				ISBN = product.ISBN,
+				Author = product.Author,
+				ListPrice = product.ListPrice,
+				Price = product.Price,
+				Price50 = product.Price50,
+				Price100 = product.Price100,
+				ImageUrl = product.ImageUrl,
+				CategoryId = product.CategoryId
+			};
 			if (product == null)
 			{
 				return BadRequest();
 			}
-			patchDTO.ApplyTo(product, ModelState);
+			patchDTO.ApplyTo(productDTO, ModelState);
+			Product model = new()
+			{
+				Id = productDTO.Id,
+				Title = productDTO.Title,
+				Description = productDTO.Description,
+				ISBN = productDTO.ISBN,
+				Author = productDTO.Author,
+				ListPrice = productDTO.ListPrice,
+				Price = productDTO.Price,
+				Price50 = productDTO.Price50,
+				Price100 = productDTO.Price100,
+				ImageUrl = productDTO.ImageUrl,
+				CategoryId = productDTO.CategoryId
+			};
+			_db.Products.Update(model);
+			_db.SaveChanges();
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
