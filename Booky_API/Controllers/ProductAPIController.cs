@@ -2,6 +2,7 @@
 using Booky_API.Data;
 using Booky_API.Models;
 using Booky_API.Models.Dto;
+using Booky_API.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -18,13 +19,13 @@ namespace Booky_API.Controllers
 	public class ProductAPIController : ControllerBase
 	{
 		//private readonly ILogging _logger;
-		private readonly ApplicationDBContext _db;
+		private readonly IProductRepository _dbProduct;
 		private readonly IMapper _mapper;
 
-		public ProductAPIController(ApplicationDBContext db, IMapper mapper)
+		public ProductAPIController(IProductRepository dbProduct, IMapper mapper)
 		{
 			//_logger = logger;
-			_db = db;
+			_dbProduct = dbProduct;
 			_mapper = mapper;
 		}
 		[HttpGet]
@@ -32,7 +33,7 @@ namespace Booky_API.Controllers
 		public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
 		{
 			//_logger.Log("Getting all product", "");
-			IEnumerable<Product> productList = await _db.Products.ToListAsync();
+			IEnumerable<Product> productList = await _dbProduct.GetAllAsync();
 			return Ok(_mapper.Map<List<ProductDTO>>(productList));
 		}
 
@@ -47,7 +48,7 @@ namespace Booky_API.Controllers
 				//_logger.Log("Get Product Error with Id" + id, "error");
 				return BadRequest();
 			}
-			var product = await _db.Products.FirstOrDefaultAsync(u => u.Id == id);
+			var product = await _dbProduct.GetAsync(u => u.Id == id);
 			if (product == null)
 			{
 				return NotFound();
@@ -68,7 +69,7 @@ namespace Booky_API.Controllers
 			//{
 			//    return BadRequest(ModelState);
 			//}
-			if (await _db.Products.FirstOrDefaultAsync(u => u.Title.ToLower() == createDTO.Title.ToLower()) != null)
+			if (await _dbProduct.GetAsync(u => u.Title.ToLower() == createDTO.Title.ToLower()) != null)
 			{
 				ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
 				return BadRequest(ModelState);
@@ -98,9 +99,7 @@ namespace Booky_API.Controllers
 			//	ImageUrl = createDTO.ImageUrl,
 			//	CategoryId = createDTO.CategoryId
 			//};
-			await _db.Products.AddAsync(model);
-			await _db.SaveChangesAsync();
-			//await _dbVilla.CreateAsync(villa);
+			await _dbProduct.CreateAsync(model);
 			//_response.Result = _mapper.Map<VillaDTO>(villa);
 			//_response.StatusCode = HttpStatusCode.Created;
 			//return CreatedAtRoute("GetVilla", new { id = villa.Id }, _response);
@@ -126,13 +125,12 @@ namespace Booky_API.Controllers
 			{
 				return BadRequest();
 			}
-			var product = await _db.Products.FirstOrDefaultAsync(u => u.Id == id);
+			var product = await _dbProduct.GetAsync(u => u.Id == id);
 			if (product == null)
 			{
 				return NotFound();
 			}
-			_db.Products.Remove(product);
-			await _db.SaveChangesAsync();
+			await _dbProduct.RemoveAsync(product);
 			return NoContent();
 		}
 
@@ -160,8 +158,7 @@ namespace Booky_API.Controllers
 			//	ImageUrl = updateDTO.ImageUrl,
 			//	CategoryId = updateDTO.CategoryId
 			//};
-			_db.Products.Update(model);
-			await _db.SaveChangesAsync();
+			await _dbProduct.UpdateAsync(model);
 			return NoContent();
 		}
 
@@ -174,7 +171,7 @@ namespace Booky_API.Controllers
 			{
 				return BadRequest();
 			}
-			var product = await _db.Products.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+			var product = await _dbProduct.GetAsync(u => u.Id == id, tracked: false);
 			ProductUpdateDTO productDTO = _mapper.Map<ProductUpdateDTO>(product);
 			//ProductUpdateDTO productDTO = new()
 			//{
@@ -210,8 +207,7 @@ namespace Booky_API.Controllers
 			//	ImageUrl = productDTO.ImageUrl,
 			//	CategoryId = productDTO.CategoryId
 			//};
-			_db.Products.Update(model);
-			await _db.SaveChangesAsync();
+			await _dbProduct.UpdateAsync(model);
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);

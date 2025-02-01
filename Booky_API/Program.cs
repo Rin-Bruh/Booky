@@ -1,5 +1,7 @@
 using Booky_API;
 using Booky_API.Data;
+using Booky_API.Repository;
+using Booky_API.Repository.IRepository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 	options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
 //	.WriteTo.File("log/productLogs.txt", rollingInterval: RollingInterval.Day).CreateLogger();
