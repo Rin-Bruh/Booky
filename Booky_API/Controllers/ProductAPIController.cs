@@ -88,7 +88,7 @@ namespace Booky_API.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] ProductCreateDTO createDTO)
+		public async Task<ActionResult<APIResponse>> CreateProduct([FromBody] ProductCreateDTO createDTO)
 		{
 			try
 			{
@@ -98,12 +98,12 @@ namespace Booky_API.Controllers
 				//}
 				if (await _dbProduct.GetAsync(u => u.Title.ToLower() == createDTO.Title.ToLower()) != null)
 				{
-					ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
+					ModelState.AddModelError("ErrorMessages", "Product already Exists!");
 					return BadRequest(ModelState);
 				}
 				if (createDTO == null)
 				{
-					//ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
+					//ModelState.AddModelError("ErrorMessages", "Product already Exists!");
 					return BadRequest(createDTO);
 				}
 
