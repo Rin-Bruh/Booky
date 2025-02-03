@@ -24,6 +24,7 @@ namespace Booky_API.Models.Dto
 		public double Price100 { get; set; }
 		[Required]
 		public string ImageUrl { get; set; }
+		[Required]
 		public int CategoryId { get; set; }
 	}
 }

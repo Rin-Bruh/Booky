@@ -21,14 +21,16 @@ namespace Booky_API.Controllers
 		//private readonly ILogging _logger;
 		protected APIResponse _response;
 		private readonly IProductRepository _dbProduct;
+		private readonly ICategoryRepository _dbCategory;
 		private readonly IMapper _mapper;
 
-		public ProductAPIController(IProductRepository dbProduct, IMapper mapper)
+		public ProductAPIController(IProductRepository dbProduct, IMapper mapper, ICategoryRepository dbCategory)
 		{
 			//_logger = logger;
 			_dbProduct = dbProduct;
 			_mapper = mapper;
 			this._response = new();
+			_dbCategory = dbCategory;
 		}
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -88,7 +90,7 @@ namespace Booky_API.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] ProductCreateDTO createDTO)
+		public async Task<ActionResult<APIResponse>> CreateProduct([FromBody] ProductCreateDTO createDTO)
 		{
 			try
 			{
@@ -98,12 +100,17 @@ namespace Booky_API.Controllers
 				//}
 				if (await _dbProduct.GetAsync(u => u.Title.ToLower() == createDTO.Title.ToLower()) != null)
 				{
-					ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
+					ModelState.AddModelError("ErrorMessages", "Product already Exists!");
+					return BadRequest(ModelState);
+				}
+				if (await _dbCategory.GetAsync(u => u.Id == createDTO.CategoryId) == null)
+				{
+					ModelState.AddModelError("ErrorMessages", "Category ID is Invalid!");
 					return BadRequest(ModelState);
 				}
 				if (createDTO == null)
 				{
-					//ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
+					//ModelState.AddModelError("ErrorMessages", "Product already Exists!");
 					return BadRequest(createDTO);
 				}
 
@@ -181,6 +188,11 @@ namespace Booky_API.Controllers
 				if (updateDTO == null || id != updateDTO.Id)
 				{
 					return BadRequest();
+				}
+				if (await _dbCategory.GetAsync(u => u.Id == updateDTO.CategoryId) == null)
+				{
+					ModelState.AddModelError("ErrorMessages", "Category ID is Invalid!");
+					return BadRequest(ModelState);
 				}
 				Product model = _mapper.Map<Product>(updateDTO);
 				//Product model = new()
