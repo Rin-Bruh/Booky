@@ -37,12 +37,12 @@ namespace Booky_Web.Services
 			});
 		}
 
-		public Task<T> GetAllAsync<T>(string token)
+		public Task<T> GetAllAsync<T>()
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = productUrl + "/api/v1/productAPI"
+				Url = productUrl + "/api/productAPI"
 				//Token = token
 			});
 		}
