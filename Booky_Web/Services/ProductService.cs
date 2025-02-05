@@ -16,7 +16,7 @@ namespace Booky_Web.Services
 			productUrl = configuration.GetValue<string>("ServiceUrls:BookyAPI");
 
 		}
-		public Task<T> CreateAsync<T>(ProductCreateDTO dto, string token)
+		public Task<T> CreateAsync<T>(ProductCreateDTO dto)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
@@ -27,7 +27,7 @@ namespace Booky_Web.Services
 			});
 		}
 
-		public Task<T> DeleteAsync<T>(int id, string token)
+		public Task<T> DeleteAsync<T>(int id)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
@@ -47,7 +47,7 @@ namespace Booky_Web.Services
 			});
 		}
 
-		public Task<T> GetAsync<T>(int id, string token)
+		public Task<T> GetAsync<T>(int id)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
@@ -57,7 +57,7 @@ namespace Booky_Web.Services
 			});
 		}
 
-		public Task<T> UpdateAsync<T>(ProductUpdateDTO dto, string token)
+		public Task<T> UpdateAsync<T>(ProductUpdateDTO dto)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
