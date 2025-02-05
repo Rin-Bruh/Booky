@@ -1,0 +1,52 @@
+﻿﻿
+@model IEnumerable<Booky_Web.Models.Dto.ProductDTO>
+@using System.Globalization
+<br />
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+			<h1 class="text-primary">Product List</h1>
+        </div>
+        <div class="col text-end pt-1">
+			<a asp-controller="Product" asp-action="CreateProduct" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i> Create New Product</a>
+        </div>
+    </div>
+
+    <table class="table">
+		<thead>
+			<tr>
+				<th>
+					Title
+				</th>
+				<th>
+					Author
+				</th>
+				<th>
+					ListPrice
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var item in Model){
+				<tr>
+					<td>@item.Title</td>
+					<td>@item.Author</td>
+					<td>
+						@{
+							var vietnamCulture = new CultureInfo("vi-VN");
+							var vietnamNumberFormat = vietnamCulture.NumberFormat;
+							vietnamNumberFormat.CurrencySymbol = "đ";
+						}
+						@item.ListPrice.ToString("c", vietnamNumberFormat)
+					</td>
+					<td>
+						<a asp-controller="Product" asp-action="UpdateProduct" asp-route-productId="@item.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+						<a asp-controller="Product" asp-action="DeleteProduct" asp-route-productId="@item.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+					</td>
+				</tr>
+			}
+		</tbody>
+    </table>
+
+</div>
