@@ -24,6 +24,9 @@
 				<th>
 					ListPrice
 				</th>
+				<th>
+					Category
+				</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -39,6 +42,9 @@
 							vietnamNumberFormat.CurrencySymbol = "đ";
 						}
 						@item.ListPrice.ToString("c", vietnamNumberFormat)
+					</td>
+					<td>
+						@item.Category.Name
 					</td>
 					<td>
 						<a asp-controller="Product" asp-action="UpdateProduct" asp-route-productId="@item.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
