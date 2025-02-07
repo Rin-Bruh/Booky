@@ -21,5 +21,6 @@ namespace Booky_API.Models.Dto
 		public string ImageUrl { get; set; }
 		[Required]
 		public int CategoryId { get; set; }
+		public CategoryDTO Category { get; set; }
 	}
 }

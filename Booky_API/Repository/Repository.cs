@@ -9,6 +9,7 @@ namespace Booky_API.Repository
 	public class Repository<T> : IRepository<T> where T : class
 	{
 		private readonly ApplicationDBContext _db;
+		//_db.Product.Include(u => u.Category).ToList();
 		internal DbSet<T> dbSet;
 		public Repository(ApplicationDBContext db)
 		{
@@ -21,7 +22,8 @@ namespace Booky_API.Repository
 			await SaveAsync();
 		}
 
-		public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true)
+		//"Product,ProductSpecial"
+		public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true, string? includeProperties = null)
 		{
 			IQueryable<T> query = dbSet;
 			if (!tracked)
@@ -32,15 +34,29 @@ namespace Booky_API.Repository
 			{
 				query = query.Where(filter);
 			}
+			if (includeProperties != null)
+			{
+				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(includeProp);
+				}
+			}
 			return await query.FirstOrDefaultAsync();
 		}
 
-		public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null)
+		public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
 		{
 			IQueryable<T> query = dbSet;
 			if (filter != null)
 			{
 				query = query.Where(filter);
+			}
+			if (includeProperties != null)
+			{
+				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(includeProp);
+				}
 			}
 			return await query.ToListAsync();
 		}

@@ -39,7 +39,7 @@ namespace Booky_API.Controllers
 			try
 			{
 				//_logger.Log("Getting all product", "");
-				IEnumerable<Product> productList = await _dbProduct.GetAllAsync();
+				IEnumerable<Product> productList = await _dbProduct.GetAllAsync(includeProperties:"Category");
 				_response.Result = _mapper.Map<List<ProductDTO>>(productList);
 				_response.StatusCode = HttpStatusCode.OK;
 				return Ok(_response);
