@@ -22,7 +22,7 @@ namespace Booky_Web.Services
 			{
 				ApiType = SD.ApiType.POST,
 				Data = dto,
-				Url = productUrl + "/api/v1/productAPI"
+				Url = productUrl + "/api/productAPI"
 				//Token = token
 			});
 		}
@@ -32,7 +32,7 @@ namespace Booky_Web.Services
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.DELETE,
-				Url = productUrl + "/api/v1/productAPI/"+id
+				Url = productUrl + "/api/productAPI/"+id
 				//Token = token
 			});
 		}
@@ -52,7 +52,7 @@ namespace Booky_Web.Services
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = productUrl + "/api/v1/productAPI/"+id
+				Url = productUrl + "/api/productAPI/"+id
 				//Token = token
 			});
 		}
@@ -63,7 +63,7 @@ namespace Booky_Web.Services
 			{
 				ApiType = SD.ApiType.PUT,
 				Data = dto,
-				Url = productUrl + "/api/v1/productAPI/"+dto.Id,
+				Url = productUrl + "/api/productAPI/"+dto.Id,
 				//Token = token
 			});
 		}

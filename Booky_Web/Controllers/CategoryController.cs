@@ -29,5 +29,28 @@ namespace Booky_Web.Controllers
 			}
 			return View(list);
 		}
+		//[Authorize(Roles = "admin")]
+		public async Task<IActionResult> CreateCategory()
+		{
+			return View();
+		}
+		//[Authorize(Roles = "admin")]
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateCategory(CategoryCreateDTO model)
+		{
+			if (ModelState.IsValid)
+			{
+
+				var response = await _categoryService.CreateAsync<APIResponse>(model);
+				if (response != null && response.IsSuccess)
+				{
+					//TempData["success"] = "Category created successfully";
+					return RedirectToAction(nameof(IndexCategory));
+				}
+			}
+			//TempData["error"] = "Error encountered.";
+			return View(model);
+		}
 	}
 }
