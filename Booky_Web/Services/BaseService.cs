@@ -20,7 +20,7 @@ namespace Booky_Web.Services
 		{
 			try
 			{
-				var client = httpClient.CreateClient("MagicAPI");
+				var client = httpClient.CreateClient("BookyAPI");
 				HttpRequestMessage message = new HttpRequestMessage();
 				message.Headers.Add("Accept", "application/json");
 				message.RequestUri = new Uri(apiRequest.Url);
