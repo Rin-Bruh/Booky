@@ -62,9 +62,16 @@ namespace Booky_Web.Controllers
 				var response = await _productService.CreateAsync<APIResponse>(model.Product);
 				if (response != null && response.IsSuccess)
 				{
-					//TempData["success"] = "Product created successfully";
+					TempData["success"] = "Product created successfully";
 					return RedirectToAction(nameof(IndexProduct));
 				}
+				else
+                {
+                    if (response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
 			}
 			var resp = await _categoryService.GetAllAsync<APIResponse>();
 			if (resp != null && resp.IsSuccess)
@@ -76,7 +83,7 @@ namespace Booky_Web.Controllers
 						Value = i.Id.ToString()
 					}); 
 			}
-			//TempData["error"] = "Error encountered.";
+			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
 
@@ -112,7 +119,7 @@ namespace Booky_Web.Controllers
 				var response = await _productService.UpdateAsync<APIResponse>(model.Product);
 				if (response != null && response.IsSuccess)
 				{
-					//TempData["success"] = "Product created successfully";
+					TempData["success"] = "Product updated successfully";
 					return RedirectToAction(nameof(IndexProduct));
 				}
 			}
@@ -126,6 +133,7 @@ namespace Booky_Web.Controllers
 						Value = i.Id.ToString()
 					});
 			}
+			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
 
@@ -159,10 +167,10 @@ namespace Booky_Web.Controllers
 				var response = await _productService.DeleteAsync<APIResponse>(model.Product.Id);
 				if (response != null && response.IsSuccess)
 				{
-					//TempData["success"] = "Product created successfully";
+					TempData["success"] = "Product deleted successfully";
 					return RedirectToAction(nameof(IndexProduct));			
 			}
-			//TempData["error"] = "Error encountered.";
+			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
 	}
