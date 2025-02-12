@@ -4,6 +4,7 @@ using Booky_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Booky_API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250212025516_AddUsersToDb")]
+    partial class AddUsersToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,7 +142,7 @@ namespace Booky_API.Migrations
                             Id = 1,
                             Author = "Billy Spark",
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2025, 2, 12, 10, 10, 36, 94, DateTimeKind.Local).AddTicks(7904),
+                            CreatedDate = new DateTime(2025, 2, 12, 9, 55, 14, 261, DateTimeKind.Local).AddTicks(182),
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "SWD9999001",
                             ImageUrl = "\\images\\product\\Fortune of Time.jpg",
@@ -155,7 +158,7 @@ namespace Booky_API.Migrations
                             Id = 2,
                             Author = "Nancy Hoover",
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2025, 2, 12, 10, 10, 36, 98, DateTimeKind.Local).AddTicks(2365),
+                            CreatedDate = new DateTime(2025, 2, 12, 9, 55, 14, 262, DateTimeKind.Local).AddTicks(5192),
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "CAW777777701",
                             ImageUrl = "\\images\\product\\Dark Skies.jpg",
@@ -171,7 +174,7 @@ namespace Booky_API.Migrations
                             Id = 3,
                             Author = "Julian Button",
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2025, 2, 12, 10, 10, 36, 98, DateTimeKind.Local).AddTicks(2381),
+                            CreatedDate = new DateTime(2025, 2, 12, 9, 55, 14, 262, DateTimeKind.Local).AddTicks(5203),
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "RITO5555501",
                             ImageUrl = "\\images\\product\\Vanish in the Sunset.jpg",
@@ -187,7 +190,7 @@ namespace Booky_API.Migrations
                             Id = 4,
                             Author = "Abby Muscles",
                             CategoryId = 2,
-                            CreatedDate = new DateTime(2025, 2, 12, 10, 10, 36, 98, DateTimeKind.Local).AddTicks(2383),
+                            CreatedDate = new DateTime(2025, 2, 12, 9, 55, 14, 262, DateTimeKind.Local).AddTicks(5205),
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "WS3333333301",
                             ImageUrl = "\\images\\product\\Cotton Candy.jpg",
@@ -203,7 +206,7 @@ namespace Booky_API.Migrations
                             Id = 5,
                             Author = "Ron Parker",
                             CategoryId = 2,
-                            CreatedDate = new DateTime(2025, 2, 12, 10, 10, 36, 98, DateTimeKind.Local).AddTicks(2385),
+                            CreatedDate = new DateTime(2025, 2, 12, 9, 55, 14, 262, DateTimeKind.Local).AddTicks(5207),
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "SOTJ1111111101",
                             ImageUrl = "\\images\\product\\Rock in the Ocean.jpg",
@@ -219,7 +222,7 @@ namespace Booky_API.Migrations
                             Id = 6,
                             Author = "Laura Phantom",
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2025, 2, 12, 10, 10, 36, 98, DateTimeKind.Local).AddTicks(2386),
+                            CreatedDate = new DateTime(2025, 2, 12, 9, 55, 14, 262, DateTimeKind.Local).AddTicks(5209),
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "FOT000000001",
                             ImageUrl = "\\images\\product\\Leaves and Wonders.jpg",
