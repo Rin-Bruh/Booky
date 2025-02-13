@@ -33,6 +33,9 @@ namespace Booky_API.Controllers
 			_dbCategory = dbCategory;
 		}
 		[HttpGet]
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<ActionResult<APIResponse>> GetProducts()
 		{
@@ -53,7 +56,10 @@ namespace Booky_API.Controllers
 			return _response;
 		}
 
+		[Authorize(Roles = "admin")]
 		[HttpGet("{id:int}",Name = "GetProduct")]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,7 +92,7 @@ namespace Booky_API.Controllers
 		}
 
 		[HttpPost]
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -148,11 +154,12 @@ namespace Booky_API.Controllers
 		}
 
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
-		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		//[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[HttpDelete("{id:int}", Name = "DeleteProduct")]
+		[Authorize(Roles ="CUSTOM")]
 		public async Task<ActionResult<APIResponse>> DeleteProduct(int id)
 		{
 			try { 
@@ -179,6 +186,7 @@ namespace Booky_API.Controllers
 			return _response;
 		}
 
+		[Authorize(Roles = "admin")]
 		[HttpPut("{id:int}", Name = "UpdateProduct")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
