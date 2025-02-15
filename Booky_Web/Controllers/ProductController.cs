@@ -28,7 +28,7 @@ namespace Booky_Web.Controllers
 		{
 			List<ProductDTO> list = new();
 
-			var response = await _productService.GetAllAsync<APIResponse>();
+			var response = await _productService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				list = JsonConvert.DeserializeObject<List<ProductDTO>>(Convert.ToString(response.Result));
@@ -36,11 +36,11 @@ namespace Booky_Web.Controllers
 			return View(list);
 		}
 
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		public async Task<IActionResult> CreateProduct()
 		{
 			ProductCreateVM productVM = new();
-			var response = await _categoryService.GetAllAsync<APIResponse>();
+			var response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDTO>>
@@ -52,14 +52,14 @@ namespace Booky_Web.Controllers
 			}
 			return View(productVM);
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateProduct(ProductCreateVM model)
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _productService.CreateAsync<APIResponse>(model.Product);
+				var response = await _productService.CreateAsync<APIResponse>(model.Product, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Product created successfully";
@@ -73,7 +73,7 @@ namespace Booky_Web.Controllers
                     }
                 }
 			}
-			var resp = await _categoryService.GetAllAsync<APIResponse>();
+			var resp = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (resp != null && resp.IsSuccess)
 			{
 				model.CategoryList = JsonConvert.DeserializeObject<List<CategoryDTO>>
@@ -86,17 +86,17 @@ namespace Booky_Web.Controllers
 			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
-
+		[Authorize(Roles = "admin")]
 		public async Task<IActionResult> UpdateProduct(int productId)
 		{
 			ProductUpdateVM productVM = new();
-			var response = await _productService.GetAsync<APIResponse>(productId);
+			var response = await _productService.GetAsync<APIResponse>(productId, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				ProductDTO model = JsonConvert.DeserializeObject<ProductDTO>(Convert.ToString(response.Result));
 				productVM.Product =  _mapper.Map<ProductUpdateDTO>(model);
 			}
-			response = await _categoryService.GetAllAsync<APIResponse>();
+			response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDTO>>
@@ -109,21 +109,21 @@ namespace Booky_Web.Controllers
 			}
 			return NotFound();
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> UpdateProduct(ProductUpdateVM model)
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _productService.UpdateAsync<APIResponse>(model.Product);
+				var response = await _productService.UpdateAsync<APIResponse>(model.Product, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Product updated successfully";
 					return RedirectToAction(nameof(IndexProduct));
 				}
 			}
-			var resp = await _categoryService.GetAllAsync<APIResponse>();
+			var resp = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (resp != null && resp.IsSuccess)
 			{
 				model.CategoryList = JsonConvert.DeserializeObject<List<CategoryDTO>>
@@ -136,17 +136,17 @@ namespace Booky_Web.Controllers
 			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
-
+		[Authorize(Roles = "admin")]
 		public async Task<IActionResult> DeleteProduct(int productId)
 		{
 			ProductDeleteVM productVM = new();
-			var response = await _productService.GetAsync<APIResponse>(productId);
+			var response = await _productService.GetAsync<APIResponse>(productId, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				ProductDTO model = JsonConvert.DeserializeObject<ProductDTO>(Convert.ToString(response.Result));
 				productVM.Product = model;
 			}
-			response = await _categoryService.GetAllAsync<APIResponse>();
+			response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDTO>>
@@ -159,12 +159,12 @@ namespace Booky_Web.Controllers
 			}
 			return NotFound();
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteProduct(ProductDeleteVM model)
 		{
-				var response = await _productService.DeleteAsync<APIResponse>(model.Product.Id);
+				var response = await _productService.DeleteAsync<APIResponse>(model.Product.Id, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Product deleted successfully";

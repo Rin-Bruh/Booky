@@ -37,12 +37,12 @@ namespace Booky_Web.Controllers
 				//var handler = new JwtSecurityTokenHandler();
 				//var jwt = handler.ReadJwtToken(model.Token);
 
-				//var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-				//identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "name").Value));
-				//identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
-				//var principal = new ClaimsPrincipal(identity);
-				//await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
+				var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+				identity.AddClaim(new Claim(ClaimTypes.Name, model.User.UserName));
+				identity.AddClaim(new Claim(ClaimTypes.Role, model.User.Role));
+				var principal = new ClaimsPrincipal(identity);
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+				//jwt.Claims.FirstOrDefault(u => u.Type == "name").Value
 
 				HttpContext.Session.SetString(SD.SessionToken, model.Token);
 				return RedirectToAction("Index", "Home");
@@ -78,7 +78,7 @@ namespace Booky_Web.Controllers
 		{
 			await HttpContext.SignOutAsync();
 			HttpContext.Session.SetString(SD.SessionToken, "");
-			return RedirectToAction("Home");
+			return RedirectToAction("Index","Home");
 		}
 
 		public IActionResult AccessDenied()

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Booky_Utility;
 using Booky_Web.Models;
 using Booky_Web.Models.Dto;
 using Booky_Web.Services;
 using Booky_Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -22,19 +24,19 @@ namespace Booky_Web.Controllers
 		{
 			List<CategoryDTO> list = new();
 
-			var response = await _categoryService.GetAllAsync<APIResponse>();
+			var response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				list = JsonConvert.DeserializeObject<List<CategoryDTO>>(Convert.ToString(response.Result));
 			}
 			return View(list);
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		public async Task<IActionResult> CreateCategory()
 		{
 			return View();
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateCategory(CategoryCreateDTO model)
@@ -42,7 +44,7 @@ namespace Booky_Web.Controllers
 			if (ModelState.IsValid)
 			{
 
-				var response = await _categoryService.CreateAsync<APIResponse>(model);
+				var response = await _categoryService.CreateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Category created successfully";
@@ -52,9 +54,10 @@ namespace Booky_Web.Controllers
 			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
+		[Authorize(Roles = "admin")]
 		public async Task<IActionResult> UpdateCategory(int categoryId)
 		{
-			var response = await _categoryService.GetAsync<APIResponse>(categoryId);
+			var response = await _categoryService.GetAsync<APIResponse>(categoryId, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				CategoryDTO model = JsonConvert.DeserializeObject<CategoryDTO>(Convert.ToString(response.Result));
@@ -62,14 +65,14 @@ namespace Booky_Web.Controllers
 			}
 			return View();
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> UpdateCategory(CategoryUpdateDTO model)
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _categoryService.UpdateAsync<APIResponse>(model);
+				var response = await _categoryService.UpdateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Category updated successfully";
@@ -79,10 +82,10 @@ namespace Booky_Web.Controllers
 			TempData["error"] = "Error encountered.";
 			return View(model);
 		}
-
+		[Authorize(Roles = "admin")]
 		public async Task<IActionResult> DeleteCategory(int categoryId)
 		{
-			var response = await _categoryService.GetAsync<APIResponse>(categoryId);
+			var response = await _categoryService.GetAsync<APIResponse>(categoryId, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				CategoryDTO model = JsonConvert.DeserializeObject<CategoryDTO>(Convert.ToString(response.Result));
@@ -90,12 +93,12 @@ namespace Booky_Web.Controllers
 			}
 			return View();
 		}
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteCategory(CategoryDTO model)
 		{
-			var response = await _categoryService.DeleteAsync<APIResponse>(model.Id);
+			var response = await _categoryService.DeleteAsync<APIResponse>(model.Id, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				TempData["success"] = "Category deleted successfully";
