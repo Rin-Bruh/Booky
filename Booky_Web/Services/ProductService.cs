@@ -16,55 +16,55 @@ namespace Booky_Web.Services
 			productUrl = configuration.GetValue<string>("ServiceUrls:BookyAPI");
 
 		}
-		public Task<T> CreateAsync<T>(ProductCreateDTO dto)
+		public Task<T> CreateAsync<T>(ProductCreateDTO dto, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.POST,
 				Data = dto,
-				Url = productUrl + "/api/productAPI"
-				//Token = token
+				Url = productUrl + "/api/productAPI",
+				Token = token
 			});
 		}
 
-		public Task<T> DeleteAsync<T>(int id)
+		public Task<T> DeleteAsync<T>(int id, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.DELETE,
-				Url = productUrl + "/api/productAPI/"+id
-				//Token = token
+				Url = productUrl + "/api/productAPI/"+id,
+				Token = token
 			});
 		}
 
-		public Task<T> GetAllAsync<T>()
+		public Task<T> GetAllAsync<T>(string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = productUrl + "/api/productAPI"
-				//Token = token
+				Url = productUrl + "/api/productAPI",
+				Token = token
 			});
 		}
 
-		public Task<T> GetAsync<T>(int id)
+		public Task<T> GetAsync<T>(int id, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = productUrl + "/api/productAPI/"+id
-				//Token = token
+				Url = productUrl + "/api/productAPI/"+id,
+				Token = token
 			});
 		}
 
-		public Task<T> UpdateAsync<T>(ProductUpdateDTO dto)
+		public Task<T> UpdateAsync<T>(ProductUpdateDTO dto, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.PUT,
 				Data = dto,
 				Url = productUrl + "/api/productAPI/"+dto.Id,
-				//Token = token
+				Token = token
 			});
 		}
 	}

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Booky_Utility;
 using Booky_Web.Models;
 using Booky_Web.Models.Dto;
 using Booky_Web.Services.IServices;
@@ -22,7 +23,7 @@ namespace Booky_Web.Controllers
 		{
 			List<ProductDTO> list = new();
 
-			var response = await _productService.GetAllAsync<APIResponse>();
+			var response = await _productService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				list = JsonConvert.DeserializeObject<List<ProductDTO>>(Convert.ToString(response.Result));

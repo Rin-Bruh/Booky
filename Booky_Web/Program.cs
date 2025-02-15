@@ -1,6 +1,7 @@
 using Booky_Web;
 using Booky_Web.Services;
 using Booky_Web.Services.IServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,16 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			  .AddCookie(options =>
+			  {
+				  options.Cookie.HttpOnly = true;
+				  options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+				  options.LoginPath = "/Auth/Login";
+				  options.AccessDeniedPath = "/Auth/AccessDenied";
+				  options.SlidingExpiration = true;
+			  });
 builder.Services.AddSession(options =>
 {
 	options.IdleTimeout = TimeSpan.FromMinutes(100);
@@ -37,7 +47,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 app.MapStaticAssets();

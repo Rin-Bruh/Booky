@@ -84,7 +84,7 @@ namespace Booky_API.Controllers
 		}
 
 		[HttpPost]
-		//[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -116,7 +116,7 @@ namespace Booky_API.Controllers
 			}
 			return _response;
 		}
-
+		[Authorize(Roles = "admin")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		//[ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -148,7 +148,7 @@ namespace Booky_API.Controllers
 			}
 			return _response;
 		}
-
+		[Authorize(Roles = "admin")]
 		[HttpPut("{id:int}", Name = "UpdateCategory")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
