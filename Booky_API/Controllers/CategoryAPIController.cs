@@ -40,6 +40,7 @@ namespace Booky_API.Controllers
 				IEnumerable<Category> categoryList = await _dbCategory.GetAllAsync();
 				_response.Result = _mapper.Map<List<CategoryDTO>>(categoryList);
 				_response.StatusCode = HttpStatusCode.OK;
+				_response.IsSuccess = true;
 				return Ok(_response);
 			}
 			catch (Exception ex)
@@ -62,16 +63,21 @@ namespace Booky_API.Controllers
 				{
 					//_logger.Log("Get Product Error with Id" + id, "error");
 					_response.StatusCode = HttpStatusCode.BadRequest;
+					_response.IsSuccess = false;
+					_response.ErrorMessages.Add("Id is incorrect");
 					return BadRequest(_response);
 				}
 				var category = await _dbCategory.GetAsync(u => u.Id == id);
 				if (category == null)
 				{
 					_response.StatusCode = HttpStatusCode.NotFound;
+					_response.IsSuccess = false;
+					_response.ErrorMessages.Add("Id not found");
 					return NotFound(_response);
 				}
 				_response.Result = _mapper.Map<CategoryDTO>(category);
 				_response.StatusCode = HttpStatusCode.OK;
+				_response.IsSuccess = true;
 				return Ok(_response);
 			}
 			catch (Exception ex)
