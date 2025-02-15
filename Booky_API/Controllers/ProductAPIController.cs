@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json;
 using System.Xml;
 
 namespace Booky_API.Controllers
@@ -33,15 +34,34 @@ namespace Booky_API.Controllers
 			_dbCategory = dbCategory;
 		}
 		[HttpGet]
+		[ResponseCache(CacheProfileName = "Default30")]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult<APIResponse>> GetProducts()
+		public async Task<ActionResult<APIResponse>> GetProducts([FromQuery(Name = "filterCategory")] int? categoryId,
+			[FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
 		{
 			try
 			{
 				//_logger.Log("Getting all product", "");
-				IEnumerable<Product> productList = await _dbProduct.GetAllAsync(includeProperties:"Category");
+				IEnumerable<Product> productList;
+				if (categoryId > 0)
+				{
+					productList = await _dbProduct.GetAllAsync(u => u.CategoryId == categoryId, includeProperties: "Category", pageSize: pageSize,
+						pageNumber: pageNumber);
+				}
+				else
+				{
+					productList = await _dbProduct.GetAllAsync(includeProperties: "Category", pageSize: pageSize,
+						pageNumber: pageNumber);
+				}
+				if (!string.IsNullOrEmpty(search))
+				{
+					productList = productList.Where(u => u.Title.ToLower().Contains(search) || u.Author.ToLower().Contains(search));
+				}
+				Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
+
+				Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
 				_response.Result = _mapper.Map<List<ProductDTO>>(productList);
 				_response.StatusCode = HttpStatusCode.OK;
 				return Ok(_response);
@@ -61,6 +81,7 @@ namespace Booky_API.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		//[ResponseCache(Location =ResponseCacheLocation.None,NoStore =true)]
 		public async Task<ActionResult<APIResponse>> GetProduct(int id)
 		{
 			try { 
@@ -68,16 +89,21 @@ namespace Booky_API.Controllers
 				{
 					//_logger.Log("Get Product Error with Id" + id, "error");
 					_response.StatusCode = HttpStatusCode.BadRequest;
+					_response.IsSuccess = false;
+					_response.ErrorMessages.Add("Product is incorrect");
 					return BadRequest(_response);
 				}
 				var product = await _dbProduct.GetAsync(u => u.Id == id);
 				if (product == null)
 				{
 					_response.StatusCode = HttpStatusCode.NotFound;
+					_response.IsSuccess = false;
+					_response.ErrorMessages.Add("Product not found");
 					return NotFound(_response);
 				}
 				_response.Result = _mapper.Map<ProductDTO>(product);
 				_response.StatusCode = HttpStatusCode.OK;
+				_response.IsSuccess = true;
 				return Ok(_response);
 			}
 			catch (Exception ex)
