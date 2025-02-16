@@ -1,9 +1,11 @@
 using Booky_API;
 using Booky_API.Data;
+using Booky_API.Models;
 using Booky_API.Repository;
 using Booky_API.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 	options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
+builder.Services.AddIdentity<ApplicationIdentityUser, IdentityRole>()
+	.AddEntityFrameworkStores<ApplicationDBContext>();
 builder.Services.AddResponseCaching();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

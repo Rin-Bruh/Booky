@@ -7,6 +7,6 @@ namespace Booky_API.Repository.IRepository
 	{
 		bool IsUniqueUser(string username);
 		Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
-		Task<ApplicationUser> Register(RegisterationRequestDTO registerationRequestDTO);
+		Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO);
 	}
 }

@@ -1,15 +1,16 @@
 ﻿using Booky_API.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Booky_API.Data
 {
-	public class ApplicationDBContext : DbContext
+	public class ApplicationDBContext : IdentityDbContext<ApplicationIdentityUser>
 	{
 		public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
 			: base(options)
 		{
 		}
-
+		public DbSet<ApplicationIdentityUser> ApplicationIdentityUsers { get; set; }
 		public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Category> Categories { get; set; }
