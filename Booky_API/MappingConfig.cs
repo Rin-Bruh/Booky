@@ -17,6 +17,7 @@ namespace Booky_API
 			CreateMap<Category, CategoryDTO>().ReverseMap();
 			CreateMap<Category, CategoryCreateDTO>().ReverseMap();
 			CreateMap<Category, CategoryUpdateDTO>().ReverseMap();
+			CreateMap<ApplicationIdentityUser, UserDTO>().ReverseMap();
 		}
 	}
 }
