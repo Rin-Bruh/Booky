@@ -24,7 +24,7 @@ namespace Booky_API.Models
 		public double Price100 { get; set; }
 		public string ImageUrl { get; set; }
 
-		[ForeignKey("CategoryId")]
+		[ForeignKey("Category")]
 		public int CategoryId { get; set; }
 		public Category Category { get; set; }
 		public DateTime CreatedDate { get; set; }
